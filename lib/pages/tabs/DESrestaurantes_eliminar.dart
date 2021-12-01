@@ -9,9 +9,6 @@ class RestaurantesEliminar extends StatefulWidget {
 }
 
 class _RestaurantesEliminarState extends State<RestaurantesEliminar> {
-  TextEditingController nomCtrl = TextEditingController();
-  TextEditingController calCtrl = TextEditingController();
-  TextEditingController ciuCtrl = TextEditingController();
   String errorLog = '';
 // MODIFICAR PARA DROPDOWN ID + GET
   @override
@@ -24,22 +21,7 @@ class _RestaurantesEliminarState extends State<RestaurantesEliminar> {
         padding: const EdgeInsets.all(5),
         child: Column(
           children: [
-            TextField(
-              controller: nomCtrl,
-              decoration: InputDecoration(
-                  labelText: 'Nombre', hintText: 'Nombre del restaurante'),
-            ),
-            TextField(
-              controller: calCtrl,
-              decoration: InputDecoration(
-                  labelText: 'Calle', hintText: 'Ej: Las Camelias #2324'),
-            ),
-            TextField(
-              controller: ciuCtrl,
-              decoration: InputDecoration(
-                  labelText: 'Ciudad',
-                  hintText: 'Ciudad en el que se encuentra'),
-            ),
+            //droppdown ID
             Container(
               margin: EdgeInsets.only(top: 10),
               child: Text(
@@ -52,10 +34,10 @@ class _RestaurantesEliminarState extends State<RestaurantesEliminar> {
               width: double.infinity,
               padding: EdgeInsets.symmetric(horizontal: 5),
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(primary: Colors.green[400]),
+                style: ElevatedButton.styleFrom(primary: Colors.red[400]),
                 child: Text('Eliminar el restaurante'),
                 onPressed: () async {
-                  PortiProvider provider = PortiProvider();
+                  /*PortiProvider provider = PortiProvider();
                   var respuesta = await provider.postRestaurante(
                       nomCtrl.text, calCtrl.text, ciuCtrl.text);
                   if (respuesta['message'] != null) {
@@ -65,7 +47,7 @@ class _RestaurantesEliminarState extends State<RestaurantesEliminar> {
                   } else {
                     Navigator.pop(context);
                   }
-                  ;
+                  ;*/
                 },
               ),
             )

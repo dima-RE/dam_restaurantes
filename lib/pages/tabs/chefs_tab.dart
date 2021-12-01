@@ -47,6 +47,7 @@ class _TabChefsState extends State<TabChefs> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ChefPreview(
+                                        //hasta index 4 para prueba.
                                         img: 'c' + index.toString(),
                                         nom: snapshot.data[index]['nombre'],
                                         rut: snapshot.data[index]['rut'],

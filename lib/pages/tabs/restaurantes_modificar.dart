@@ -1,24 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:project_06/provider/restaurante_provider.dart';
 
-class RestaurantesAgregar extends StatefulWidget {
-  RestaurantesAgregar({Key? key}) : super(key: key);
+class RestaurantesModificar extends StatefulWidget {
+  int id;
+  String nom, cal, ciu;
 
+  RestaurantesModificar(
+      {Key? key, this.id = 0, this.nom = '', this.cal = '', this.ciu = ''})
+      : super(key: key);
   @override
-  _RestaurantesAgregarState createState() => _RestaurantesAgregarState();
+  _RestaurantesModificarState createState() => _RestaurantesModificarState();
 }
 
-class _RestaurantesAgregarState extends State<RestaurantesAgregar> {
+class _RestaurantesModificarState extends State<RestaurantesModificar> {
   TextEditingController nomCtrl = TextEditingController();
   TextEditingController calCtrl = TextEditingController();
   TextEditingController ciuCtrl = TextEditingController();
   String errorLog = '';
-// MODIFICAR A DROPDOWN ID + GET - MODIFY
+
+  @override
+  void initState() {
+    super.initState();
+    nomCtrl.text = widget.nom;
+    calCtrl.text = widget.cal;
+    ciuCtrl.text = widget.ciu;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Agregar Restaurante'),
+        title: Text('Modificar Restaurante'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(5),
@@ -32,12 +44,12 @@ class _RestaurantesAgregarState extends State<RestaurantesAgregar> {
             TextField(
               controller: calCtrl,
               decoration: InputDecoration(
-                  labelText: 'Calle', hintText: 'Ej: Las Camelias #2324'),
+                  labelText: 'calle', hintText: 'Ej: Las Camelias #2324'),
             ),
             TextField(
               controller: ciuCtrl,
               decoration: InputDecoration(
-                  labelText: 'Ciudad',
+                  labelText: "'Ciudad",
                   hintText: 'Ciudad en el que se encuentra'),
             ),
             Container(
@@ -52,12 +64,12 @@ class _RestaurantesAgregarState extends State<RestaurantesAgregar> {
               width: double.infinity,
               padding: EdgeInsets.symmetric(horizontal: 5),
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(primary: Colors.green[400]),
-                child: Text('Agregar el restaurante'),
+                style: ElevatedButton.styleFrom(primary: Colors.blue[400]),
+                child: Text('Modificar el restaurante'),
                 onPressed: () async {
                   PortiProvider provider = PortiProvider();
-                  var respuesta = await provider.postRestaurante(
-                      nomCtrl.text, calCtrl.text, ciuCtrl.text);
+                  var respuesta = await provider.chRestaurante(
+                      widget.id, nomCtrl.text, calCtrl.text, ciuCtrl.text);
                   if (respuesta['message'] != null) {
                     setState(() {
                       errorLog = respuesta['errors']['nombre'][0];

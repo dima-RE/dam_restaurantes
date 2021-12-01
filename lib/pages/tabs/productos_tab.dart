@@ -46,6 +46,7 @@ class _TabProductosState extends State<TabProductos> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => ProductoPreview(
+                                // hasta index 6 para prueba
                                 img:
                                     'p' + snapshot.data[index]['id'].toString(),
                                 nom: snapshot.data[index]['nombre'],
