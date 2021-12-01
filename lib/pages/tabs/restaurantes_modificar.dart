@@ -16,7 +16,7 @@ class _RestaurantesModificarState extends State<RestaurantesModificar> {
   TextEditingController nomCtrl = TextEditingController();
   TextEditingController calCtrl = TextEditingController();
   TextEditingController ciuCtrl = TextEditingController();
-  String errorLog = '';
+  //String errorNom = '';String errorCal = '';String errorCiu = '';
 
   @override
   void initState() {
@@ -41,24 +41,38 @@ class _RestaurantesModificarState extends State<RestaurantesModificar> {
               decoration: InputDecoration(
                   labelText: 'Nombre', hintText: 'Nombre del restaurante'),
             ),
+            /*Container(
+              margin: EdgeInsets.only(top: 10),
+              child: Text(
+                errorNom,
+                style: Theme.of(context).textTheme.headline3,
+              ),
+            ),*/
             TextField(
               controller: calCtrl,
               decoration: InputDecoration(
                   labelText: 'calle', hintText: 'Ej: Las Camelias #2324'),
             ),
+            /*Container(
+              margin: EdgeInsets.only(top: 10),
+              child: Text(
+                errorCal,
+                style: Theme.of(context).textTheme.headline3,
+              ),
+            ),*/
             TextField(
               controller: ciuCtrl,
               decoration: InputDecoration(
                   labelText: "'Ciudad",
                   hintText: 'Ciudad en el que se encuentra'),
             ),
-            Container(
+            /*Container(
               margin: EdgeInsets.only(top: 10),
               child: Text(
-                errorLog,
+                errorCiu,
                 style: Theme.of(context).textTheme.headline3,
               ),
-            ),
+            ),*/
             Spacer(),
             Container(
               width: double.infinity,
@@ -68,16 +82,20 @@ class _RestaurantesModificarState extends State<RestaurantesModificar> {
                 child: Text('Modificar el restaurante'),
                 onPressed: () async {
                   PortiProvider provider = PortiProvider();
-                  var respuesta = await provider.chRestaurante(
+                  await provider.chRestaurante(
                       widget.id, nomCtrl.text, calCtrl.text, ciuCtrl.text);
-                  if (respuesta['message'] != null) {
+                  /*if (respuesta['message'] != null) {
+                    var err = respuesta['errors'];
                     setState(() {
-                      errorLog = respuesta['errors']['nombre'][0];
+                      errorNom =
+                          err['nombre'] != null ? err['nombre'][0] : '';
+                      errorCal = err['calle'] != null ? err['calle'][0] : '';
+                      errorCiu =
+                          err['ciudad'] != null ? err['ciudad'][0] : '';
                     });
-                  } else {
-                    Navigator.pop(context);
-                  }
-                  ;
+                  } else {*/
+                  Navigator.pop(context);
+                  //};
                 },
               ),
             )

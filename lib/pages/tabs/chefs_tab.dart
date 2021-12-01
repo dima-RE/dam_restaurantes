@@ -54,7 +54,7 @@ class _TabChefsState extends State<TabChefs> {
                                         esp: snapshot.data[index]
                                             ['especialidad'],
                                         res: snapshot.data[index]
-                                            ['restaurante_id']['nombre'],
+                                            ['restaurante_id'],
                                         //.toString(),
                                       )),
                             );
@@ -70,11 +70,14 @@ class _TabChefsState extends State<TabChefs> {
               width: double.infinity,
               padding: EdgeInsets.symmetric(horizontal: 5),
               child: ElevatedButton(
+                style: ElevatedButton.styleFrom(primary: Colors.green[400]),
                 child: Text('Agregar Chef'),
                 onPressed: () {
                   MaterialPageRoute route =
                       MaterialPageRoute(builder: (context) => ChefsAgregar());
-                  Navigator.push(context, route);
+                  Navigator.push(context, route).then((value) {
+                    setState(() {});
+                  });
                 },
               ),
             )

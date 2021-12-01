@@ -1,24 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:project_06/pages/tabs/platos_modificar.dart';
+import 'package:project_06/provider/restaurante_provider.dart';
 import 'package:project_06/widgets/image_box.dart';
 
-class ProductoPreview extends StatelessWidget {
-  //const ProductoPreview({Key? key}) : super(key: key);
-  final String img, nom, prec, det;
+class ProductoPreview extends StatefulWidget {
+  int id, prec;
+  final String img, nom, det, chef;
 
   ProductoPreview({
+    Key? key,
+    this.id = 0,
     this.img = "",
     this.nom = "",
-    this.prec = "",
+    this.prec = 0,
+    this.chef = '',
     this.det = "",
-  });
+  }) : super(key: key);
+
+  @override
+  _ProductoPreviewState createState() => _ProductoPreviewState();
+}
+
+class _ProductoPreviewState extends State<ProductoPreview> {
+  var fp = NumberFormat.currency(decimalDigits: 0, locale: 'es-CL', symbol: '');
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
     return Scaffold(
         appBar: AppBar(
-          title: Text(nom),
+          title: Text(widget.nom),
           elevation: 0,
         ),
         body: Container(
@@ -52,7 +63,7 @@ class ProductoPreview extends StatelessWidget {
                       ),
                       Container(
                         alignment: Alignment.center,
-                        child: ImagePic(img: img),
+                        child: ImagePic(img: widget.img),
                       ),
                     ],
                   ),
@@ -63,11 +74,11 @@ class ProductoPreview extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      nom,
+                      widget.nom,
                       style: Theme.of(context).textTheme.headline1,
                     ),
                     Text(
-                      'Precio: \$ ' + prec,
+                      'Precio: \$ ' + fp.format(widget.prec),
                       style: Theme.of(context).textTheme.subtitle1,
                     ),
                   ],
@@ -76,7 +87,7 @@ class ProductoPreview extends StatelessWidget {
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 child: Text(
-                  det,
+                  widget.det,
                   style: Theme.of(context).textTheme.bodyText2,
                 ),
               ),
@@ -90,7 +101,18 @@ class ProductoPreview extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                     onPressed: () {
-                      //Navigator.pop(context);
+                      MaterialPageRoute route = MaterialPageRoute(
+                          builder: (context) => PlatosModificar(
+                                id: widget.id,
+                                nom: widget.nom,
+                                des: widget.det,
+                                chef: widget.chef,
+                                pre: widget.prec.toString(),
+                              ));
+                      Navigator.push(context, route).then((value) {
+                        setState(
+                            () {}); // corregir actualizacion, llamando a getChef
+                      });
                     },
                   ),
                   ElevatedButton(
@@ -99,8 +121,23 @@ class ProductoPreview extends StatelessWidget {
                       'Eliminar',
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
-                    onPressed: () {
-                      //Navigator.pop(context);
+                    onPressed: () async {
+                      PortiProvider provider = PortiProvider();
+                      await confirmDialog(context, widget.nom).then((confirm) {
+                        if (confirm) {
+                          setState(() {
+                            provider.delPlato(widget.id).then((delOK) {
+                              if (!delOK) {
+                                Snackbar('Ha ocurrido un error');
+                              } else {
+                                Snackbar(
+                                    'El plato ${widget.nom} ha sido eliminado');
+                                Navigator.pop(context);
+                              }
+                            });
+                          });
+                        }
+                      });
                     },
                   ),
                   ElevatedButton(
@@ -118,4 +155,31 @@ class ProductoPreview extends StatelessWidget {
           ),
         ));
   }
+
+  void Snackbar(String mensaje) {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(duration: Duration(seconds: 2), content: Text(mensaje)));
+  }
+}
+
+Future<dynamic> confirmDialog(BuildContext context, String texto) {
+  return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('¿Confirmar la eliminación?'),
+          content: Text('Se eliminará $texto'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text('Eliminar'),
+            ),
+          ],
+        );
+      });
 }

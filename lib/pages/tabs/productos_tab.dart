@@ -47,10 +47,12 @@ class _TabProductosState extends State<TabProductos> {
                             MaterialPageRoute(
                               builder: (context) => ProductoPreview(
                                 // hasta index 6 para prueba
+                                id: snapshot.data[index]['id'],
                                 img:
                                     'p' + snapshot.data[index]['id'].toString(),
                                 nom: snapshot.data[index]['nombre'],
-                                prec: fp.format(snapshot.data[index]['precio']),
+                                prec: snapshot.data[index]['precio'],
+                                chef: snapshot.data[index]['chef_id'],
                                 det: snapshot.data[index]['descripcion'],
                               ),
                             ),
@@ -71,7 +73,9 @@ class _TabProductosState extends State<TabProductos> {
               onPressed: () {
                 MaterialPageRoute route =
                     MaterialPageRoute(builder: (context) => PlatosAgregar());
-                Navigator.push(context, route);
+                Navigator.push(context, route).then((value) {
+                  setState(() {});
+                });
               },
             ),
           )

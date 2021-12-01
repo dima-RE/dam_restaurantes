@@ -2,15 +2,10 @@ import 'dart:collection';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-/**
- * Vasorguesa
- * 9000
- * Porque lo extravagante no es lo único que trabajamos. Hemos traído esta espectacular obra de arte de nuestro chef maestro, quién se inspiró luego de leer una serie de mangas en sus vacaciones (sí, el chef adora los mangas).
- */
 class PortiProvider {
   //final String apiURL = 'http:10.0.2.2:8000/api';
   //final String apiURL = 'http://192.168.1.8:8000/api';
-  final String apiURL = 'https://ca05-167-250-55-101.ngrok.io/api';
+  final String apiURL = 'https://8ce5-167-250-55-101.ngrok.io/api';
 
 // --------------- RESTAURANTES ---------------
 
@@ -65,11 +60,11 @@ class PortiProvider {
     return jsonDecode(respuesta.body);
   }
 
-  /*Future<bool> getRestaurante(int id) async {
+  Future<bool> getRestaurante(int id) async {
     var url = Uri.parse('$apiURL/restaurantes/$id');
     var respuesta = await http.get(url);
     return jsonDecode(respuesta.body);
-  }*/
+  }
 
   Future<bool> delRestaurante(int id) async {
     var url = Uri.parse('$apiURL/restaurantes/$id');
@@ -92,7 +87,7 @@ class PortiProvider {
 
 // JSON INT
   Future<LinkedHashMap<String, dynamic>> postChef(
-      String rutC, String nomC, String espC, String restC) async {
+      String rutC, String nomC, String espC, int restC) async {
     var url = Uri.parse('$apiURL/chefs');
     var respuesta = await http.post(
       url,
@@ -101,17 +96,41 @@ class PortiProvider {
         'Accept': 'application/json',
       },
       body: jsonEncode(
-        <String, String>{
+        <String, dynamic>{
           'rut': rutC,
           'nombre': nomC,
           'especialidad': espC,
-          'restaurante_id': restC.toString(),
+          'restaurante_id': restC,
         },
-        /*<String,int>{
-          'precio':precP,
-        },*/
       ),
     );
+    return jsonDecode(respuesta.body);
+  }
+
+  Future<LinkedHashMap<String, dynamic>> chChef(
+      String rutC, String nomC, String espC, int restC) async {
+    var url = Uri.parse('$apiURL/chefs/$rutC');
+    var respuesta = await http.put(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+      },
+      body: jsonEncode(
+        <String, dynamic>{
+          'rut': rutC,
+          'nombre': nomC,
+          'especialidad': espC,
+          'restaurante_id': restC,
+        },
+      ),
+    );
+    return jsonDecode(respuesta.body);
+  }
+
+  Future<bool> getChef(String rut) async {
+    var url = Uri.parse('$apiURL/chefs/$rut');
+    var respuesta = await http.get(url);
     return jsonDecode(respuesta.body);
   }
 
@@ -136,7 +155,7 @@ class PortiProvider {
 
 // JSON INT
   Future<LinkedHashMap<String, dynamic>> postPlato(
-      String nomP, String descP, int precP) async {
+      String nomP, String descP, String chefP, int precP) async {
     var url = Uri.parse('$apiURL/platos');
     var respuesta = await http.post(
       url,
@@ -145,14 +164,33 @@ class PortiProvider {
         'Accept': 'application/json',
       },
       body: jsonEncode(
-        <String, String>{
+        <String, dynamic>{
           'nombre': nomP,
           'descripcion': descP,
-          'precio': precP.toString(),
+          'chef_id': chefP,
+          'precio': precP,
         },
-        /*<String,int>{
-          'precio':precP,
-        },*/
+      ),
+    );
+    return jsonDecode(respuesta.body);
+  }
+
+  Future<LinkedHashMap<String, dynamic>> chPlato(
+      int idP, String nomP, String descP, String chefP, int precP) async {
+    var url = Uri.parse('$apiURL/platos/$idP');
+    var respuesta = await http.put(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+      },
+      body: jsonEncode(
+        <String, dynamic>{
+          'nombre': nomP,
+          'descripcion': descP,
+          'chef_id': chefP,
+          'precio': precP,
+        },
       ),
     );
     return jsonDecode(respuesta.body);

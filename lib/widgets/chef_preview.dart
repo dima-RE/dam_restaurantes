@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:project_06/pages/tabs/chefs_modificar.dart';
+import 'package:project_06/provider/restaurante_provider.dart';
 import 'package:project_06/widgets/image_box.dart';
 
 class ChefPreview extends StatefulWidget {
-  final String img, nom, rut, esp, res;
+  int res;
+  String img, nom, rut, esp;
 
-  const ChefPreview({
+  ChefPreview({
     this.img = '',
     this.nom = '',
     this.rut = '',
     this.esp = '',
-    this.res = '',
+    this.res = 0,
   });
 
   @override
@@ -19,7 +22,6 @@ class ChefPreview extends StatefulWidget {
 class _ChefPreviewState extends State<ChefPreview> {
   @override
   Widget build(BuildContext context) {
-    //Size size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
           title: Text('Chef'),
@@ -84,7 +86,7 @@ class _ChefPreviewState extends State<ChefPreview> {
                       style: Theme.of(context).textTheme.bodyText2,
                     ),
                     Text(
-                      'Restaurante: ' + widget.res,
+                      'Restaurante: ' + widget.res.toString(),
                       style: Theme.of(context).textTheme.bodyText2,
                     ),
                   ],
@@ -94,21 +96,48 @@ class _ChefPreviewState extends State<ChefPreview> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(primary: Colors.blue[400]),
                     child: Text(
                       'Modificar',
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                     onPressed: () {
-                      //Navigator.pop(context);
+                      MaterialPageRoute route = MaterialPageRoute(
+                          builder: (context) => ChefsModificar(
+                                rut: widget.rut,
+                                nom: widget.nom,
+                                esp: widget.esp,
+                                res: widget.res,
+                              ));
+                      Navigator.push(context, route).then((value) {
+                        setState(
+                            () {}); // corregir actualizacion, llamando a getChef
+                      });
                     },
                   ),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(primary: Colors.red[400]),
                     child: Text(
                       'Eliminar',
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
-                    onPressed: () {
-                      //Navigator.pop(context);
+                    onPressed: () async {
+                      PortiProvider provider = PortiProvider();
+                      await confirmDialog(context, widget.nom).then((confirm) {
+                        if (confirm) {
+                          setState(() {
+                            provider.delChef(widget.rut).then((delOK) {
+                              if (!delOK) {
+                                Snackbar('Ha ocurrido un error');
+                              } else {
+                                Snackbar(
+                                    'El chef ${widget.nom} ha sido eliminado');
+                                Navigator.pop(context);
+                              }
+                            });
+                          });
+                        }
+                      });
                     },
                   ),
                   ElevatedButton(
@@ -126,4 +155,31 @@ class _ChefPreviewState extends State<ChefPreview> {
           ),
         ));
   }
+
+  void Snackbar(String mensaje) {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(duration: Duration(seconds: 2), content: Text(mensaje)));
+  }
+}
+
+Future<dynamic> confirmDialog(BuildContext context, String texto) {
+  return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('¿Confirmar la eliminación?'),
+          content: Text('Se eliminará a $texto'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text('Eliminar'),
+            ),
+          ],
+        );
+      });
 }

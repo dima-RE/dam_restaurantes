@@ -12,7 +12,9 @@ class _RestaurantesAgregarState extends State<RestaurantesAgregar> {
   TextEditingController nomCtrl = TextEditingController();
   TextEditingController calCtrl = TextEditingController();
   TextEditingController ciuCtrl = TextEditingController();
-  String errorLog = '';
+  String errorNom = '';
+  String errorCal = '';
+  String errorCiu = '';
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +31,24 @@ class _RestaurantesAgregarState extends State<RestaurantesAgregar> {
               decoration: InputDecoration(
                   labelText: 'Nombre', hintText: 'Nombre del restaurante'),
             ),
+            Container(
+              margin: EdgeInsets.only(top: 10),
+              child: Text(
+                errorNom,
+                style: Theme.of(context).textTheme.headline3,
+              ),
+            ),
             TextField(
               controller: calCtrl,
               decoration: InputDecoration(
                   labelText: 'Calle', hintText: 'Ej: Las Camelias #2324'),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 10),
+              child: Text(
+                errorCal,
+                style: Theme.of(context).textTheme.headline3,
+              ),
             ),
             TextField(
               controller: ciuCtrl,
@@ -43,7 +59,7 @@ class _RestaurantesAgregarState extends State<RestaurantesAgregar> {
             Container(
               margin: EdgeInsets.only(top: 10),
               child: Text(
-                errorLog,
+                errorCiu,
                 style: Theme.of(context).textTheme.headline3,
               ),
             ),
@@ -57,10 +73,16 @@ class _RestaurantesAgregarState extends State<RestaurantesAgregar> {
                 onPressed: () async {
                   PortiProvider provider = PortiProvider();
                   var respuesta = await provider.postRestaurante(
-                      nomCtrl.text, calCtrl.text, ciuCtrl.text);
+                    nomCtrl.text.trim(),
+                    calCtrl.text.trim(),
+                    ciuCtrl.text.trim(),
+                  );
                   if (respuesta['message'] != null) {
+                    var err = respuesta['errors'];
                     setState(() {
-                      errorLog = respuesta['errors']['nombre'][0];
+                      errorNom = err['nombre'] != null ? err['nombre'][0] : '';
+                      errorCal = err['calle'] != null ? err['calle'][0] : '';
+                      errorCiu = err['ciudad'] != null ? err['ciudad'][0] : '';
                     });
                   } else {
                     Navigator.pop(context);

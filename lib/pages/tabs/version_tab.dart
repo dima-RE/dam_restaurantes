@@ -23,7 +23,7 @@ class TabVersion extends StatelessWidget {
             Text('¿Esta mal hecho?: Es muy probable'),
             Text(
                 '¿Es similar a la aplicación de restaurante Porti presentada hace unos meses atrás? No hay mucha creatividad que digamos.'),
-            Image(image: AssetImage('assets/images/empresa/e3.jpg'))
+            Image(image: AssetImage('assets/images/productos/c2.jpg'))
           ],
         ),
       ),
