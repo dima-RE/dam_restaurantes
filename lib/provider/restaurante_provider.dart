@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 class PortiProvider {
   //final String apiURL = 'http:10.0.2.2:8000/api';
   //final String apiURL = 'http://192.168.1.8:8000/api';
-  final String apiURL = 'https://8ce5-167-250-55-101.ngrok.io/api';
+  final String apiURL = 'https://557c-167-250-55-101.ngrok.io/api';
 
 // --------------- RESTAURANTES ---------------
 
